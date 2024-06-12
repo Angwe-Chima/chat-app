@@ -7,29 +7,33 @@ export const sendMessage = async (req, res) => {
     const { id: receiverId } = req.params;
     const senderId = req.user._id;
 
+    console.log(receiverId + " ====== " + senderId);
+
     // Find or create the conversation
     let conversation = await Conversation.findOne({
       participants: { $all: [senderId, receiverId] },
     });
 
     if (!conversation) {
-      conversation = new Conversation({
+      conversation = new Conversation.create({
         participants: [senderId, receiverId],
       });
     }
 
     // Create and save the new message
     const newMessage = new Message({
-      sender: senderId,
-      receiver: receiverId,
-      content: message,
+      senderId,
+      receiverId,
+      message,
     });
 
-    await newMessage.save();
-
     // Add the message to the conversation
-    conversation.messages.push(newMessage._id);
+    if (newMessage) {
+      conversation.messages.push(newMessage._id);
+    }
+
     await conversation.save();
+    await newMessage.save();
 
     res.status(201).send(newMessage);
   } catch (err) {

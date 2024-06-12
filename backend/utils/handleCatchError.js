@@ -6,4 +6,4 @@ const catchHandler = (err, type, res) =>{
   });
 }
 
-export default catchHandler;
+export default catchHandler; 
