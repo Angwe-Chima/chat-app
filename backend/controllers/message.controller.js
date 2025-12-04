@@ -30,9 +30,6 @@ export const sendMessage = async (req, res) => {
 
     await Promise.all([conversation.save(), newMessage.save()]);
 
-    // Populate sender info before sending via socket
-    await newMessage.populate('senderId', 'fullName profilePic');
-
     // Socket.IO functionality - send message to specific user
     const receiverSocketId = getReceiverSocketId(receiverId);
     if (receiverSocketId) {
